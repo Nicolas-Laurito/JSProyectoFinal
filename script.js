@@ -1,152 +1,155 @@
 //VARIABLES
-let ingreso1, ingreso2, reserva
-let usuario = "n"
-let claveUsuario = 123456
-let m = "Turno Inexistente"
-let r
-
-
-
+let ingreso1, ingreso2, reserva, registro, indice, flag, opcionTurno, bandera, indiceRegistro, dias, turnoSolicitado
+const especialidades = ["ALERGISTA", "DERMATOLOGIA", "MEDICO CLINICO", "PEDIATRIA", "TRAUMATOLOGIA"]
 
 
 
 //FUNCIONES
 function registrarse(){
-    let nuevoUsuario = prompt("Ingrese un nombre de Usuario") 
-    let claveNueva = prompt ("Ingrese una Clave")
-    alert("Registro Exitoso / Usuario: "+ nuevoUsuario + " ; clave: " + claveNueva)
+    let nuevoNombre = prompt("Ingrese su Nombre")           //pido datos al usuario
+    let nuevoApellido = prompt ("Ingrese su Apellido")
+    let nuevoDNI = prompt ("Ingrese su DNI")
+    let nuevoTel = prompt ("Ingrese su Telefono")
+    let nuevoEmail = prompt ("Ingrese su email")
+    let nuevoUser = prompt ("Ingrese un Nombre de Usuario")
+    let nuevoClave = prompt ("Ingrese una Clave")
+    const tAgendados=[]
+    const usuarioNuevo = new Usuario(nuevoNombre, nuevoApellido, nuevoDNI, nuevoTel, nuevoEmail, nuevoUser, nuevoClave, tAgendados) //creo un objeto nuevo a instacias del contructor
+    usuariosRegistrados.push(usuarioNuevo)      //guardo el nuevo objeto a la ultima posicion del array
+    alert("Registro Exitoso")
+   
 }
 
 function ingresoRegistrado(valor1, valor2){
-    while(valor1!=usuario || (valor2!=claveUsuario )){       //se repite mientras sea verdad
-        alert("Usuario o contraseña incorrecta")
-        valor1 = prompt("Ingrese su usuario")
-        valor2 = prompt("Ingrese su clave")
-
-    }    
-    let mensaje ="Usted ingreso al sistema de turnos" 
-    return mensaje
+    for(let user of usuariosRegistrados ){     //recorro todas las posiciones del array usuarios
+        let dato1= user.user               //guardo en una variable el dato de user y clave para luego comparar si existe
+        let dato2= user.clave
+                       
+        if(valor1===dato1 && valor2===dato2){
+          indice = usuariosRegistrados.indexOf(user)       //me guardo el indice del usuario con el que inicie cesion
+          console.log(indice)
+          let flagInterno = 1
+          return(flagInterno)
+       
+          
+        }else{
+         dato1=0
+         dato2=0
+         
+        }
+      }
+      alert("Usuario Incorrecto")
 }
 
-function mostrarTurnoMC(){
-    let mc1 = "17/06/22 a las 15 hs"
-    let mc2 = "17/06/22 a las 16 hs"
-    let mc3 = "17/06/22 a las 17:30 hs"
-    let mc4 = "19/06/22 a las 14:30 hs"    
-     
-    alert("Turno 1:" + mc1 + " //Turno 2: " + mc2 + " //Turno 3: " + mc3 + " //Turno 4: " + mc4)
-    let opcionTurno= parseInt(prompt("Elija el turno"))
-    switch(opcionTurno){
-        
-        case 1:
-            r = mc1
-            break;
-        case 2:
-            r= mc2
-            break;    
-        case 3:
-            r= mc3
-            break;    
-        case 4:
-            r= mc4
-            break;
-        default:
-            r = m        
-    }
-    return r
-    
+function buscarTurno(especialidadBuscada){
+
+    const turnos=[]
+    medicosDisponibles.forEach((tipoEspecialidad)=>{        //recorro el array de medicos 
+        if(especialidadBuscada===tipoEspecialidad.especialidad){    //comparo la especialidad recibida con la que esta guardada en cada objeto del array
+            tipoEspecialidad.diaTurno.forEach((dia,i) =>{        //si existe recorrolos dias disponibles y los guardo en una variable   
+                let unDia=dia
+                let unaHora = tipoEspecialidad.horaTurno[i]     //guardo tambien la hora del mismo indice
+                let arrayFH=(`Turno disponible el ${unDia} a las ${unaHora} con el profesional ${tipoEspecialidad.nombreApellido} `)    //guardo uno por uno esos datos en un nuevo array
+                turnos.push(arrayFH)    //cargo esos datos en un nuevo array para mostrar al usuario que hay disponible
+                 })  
+            }
+        })
+    turnos.sort()       //antes de devolverlo lo ordeno por fecha
+    return(turnos)  
 }
-function mostrarTurnoP(){
-    let p1 = "21/06/22 a las 19:30 hs"
-    let p2 = "21/06/22 a las 18:30 hs"
-    let p3 = "23/06/22 a las 19: hs"  
-      
-    alert("Turno 1:" + p1 + " //Turno 2: " + p2 + " //Turno 3: " + p3)
-    let opcionTurno= parseInt(prompt("Elija el turno"))
-    switch(opcionTurno){
-        
-        case 1:
-            r = p1
-            break;
-        case 2:
-            r= p2
-            break;    
-        case 3:
-            r= p3
-            break;    
-        default:
-            r = m        
+
+
+function reservarTurno(turnoSolicitado,turnoDisponible, indice){    //recibo el turno ingresado por el usuario, el array de turnos disponjibles y el indice del usuario que inicio cesion
+    let ind=indice
+    let agendado=turnoDisponible.includes(turnoSolicitado)      //busco si el solicitado esta en el disponible y lo guardo en una variable
+    console.log(agendado)
+    if(agendado===true){        //si esta entonces guardo ese turno en el array almacenado en la propiedad del objeto usuario
+        usuariosRegistrados[ind].turnosAgendados.push(turnoSolicitado)
+        return("Turno Reservado")
+    }else{
+        return("No se encontro el turno Indicado")
     }
-    return r
+
 }
-function mostrarTurnoC(){
-    let c1 = "16/06/22 a las 14:45 hs"
-    let c2 = "15/06/22 a las 15:30 hs"
-    let c3 = "20/06/22 a las 14 hs"
-    alert("Turno 1:" + c1 + " //Turno 2: " + c2 + " //Turno 3: " + c3)
-    let opcionTurno= parseInt(prompt("Elija el turno"))
-    switch(opcionTurno){
-        
-        case 1:
-            r = c1
-            break;
-        case 2:
-            r= c2
-            break;    
-        case 3:
-            r= c3
-            break;    
-        default:
-            r = m        
-    }
-    return r
-    
-}
+
 
 
 //PROGRAMA
-alert("Para solicitar un turno debe estar registrado")
 
-let registro = prompt("Ingrese 1: si esta registrado / 2: si tiene que registrarse")
-if(registro==2){
-    
-    registrarse()
-    alert("Ingresó al sistema de turnos")
-   
-}else {
+alert("Para solicitar un turno debe estar registrado")
+do{
+flag=0
+registro = prompt("Ingrese 1: Para Ingresar / 2: Para Registrarse")
+
+while(registro==2){
+    registrarse()           //llamo a la funcion para registrarse
+    registro = prompt("Ingrese 1: Para Ingresar / Ingrese 2: Para Registrarse")
+}
+
+if(registro==1){
     ingreso1 = prompt("Ingrese su usuario")
     ingreso2 = prompt("Ingrese su clave")
-    let mostrarMensaje=ingresoRegistrado(ingreso1, ingreso2)
-    alert(mostrarMensaje)
+    flag= ingresoRegistrado(ingreso1, ingreso2)     //llamo a la funcion que comprueba que el usuario existe
+    if(flag>-1){
+        indiceRegistro=indice
+        flag=1
+    }                   
+    
+}else{
+    alert("Opcion Invalida")
 }
 
-let opcion= parseInt(prompt("Elija una especialidad: 1-Medico Clinico / 2-Pediatria / 3-Cardiologia /4-Salir Del sistema"))
 
-while(opcion!=4){
+}while(flag!=1)
 
-switch (opcion) {
-    case 1: 
-        alert("Turnos Disponibles de Medico Clinico: ");
-        reserva = mostrarTurnoMC(r);
-        break;
-    case 2: 
-        alert("Turnos Disponibles de Pediatria: ")
-        reserva = mostrarTurnoP(r);
-        break;
-    case 3: 
-        alert("Turnos Disponibles de Cardiologia: ")
-        reserva = mostrarTurnoC(r);
-        break;
-    default:
-        alert("opcion invalida")
-        break;
+alert("Usted ingreso al Sistema de Turno")
+console.table(usuariosRegistrados)
+   
+
+
+do{
+    opcionTurno= parseInt(prompt(`1 : Buscar Turno por Especialidad ${especialidades} / 2 : Consultar turnos Reservados / 3 : Salir`))   //despues puedo agregar mas opciones, como dar de baja un turno, editar perfil
+
+switch(opcionTurno){
+    case 1:
+
+   do{
+        bandera=0
+        let especialidad = prompt("Ingrese la especialidad deseada").toUpperCase()
+        dias = buscarTurno(especialidad)
+        if(dias.length!=0){     //si el array de turno que me devolvio la funcion no esta vacio entonces lo muestro
+            console.table(dias)
+   
+        }else{
+            alert("No existe la especialidad ingresada")
+           bandera=1
+        }
+    }while(bandera!=0)
+
+    
+    let diaSolicitado= prompt("Ingrese el dia deseado dentro de los disponibles (dd/mm/aa)")
+    let horaSolicitada= prompt("Ingrese el horario deseado dentro de los disponibles (hh:mm)") 
+    let medicoSolicitado= prompt("Ingrese el especialista deseado").toUpperCase() 
+    turnoSolicitado=(`Turno disponible el ${diaSolicitado} a las ${horaSolicitada} con el profesional ${medicoSolicitado} `)
+    let mensaje=reservarTurno(turnoSolicitado, dias, indiceRegistro)
+    alert(mensaje)
+    
+  break;
+
+
+case 2:
+    usuariosRegistrados[indiceRegistro].mostrarTurno()      //llamo al metodo de usuarios para mostrar los turnos agendados
+  
+    break;
+
+case 3:    
+alert("Gracias por Visitar el portal de reserva de Turnos")
+break;
+default:
+    alert("Opcion Invalida")
+    break;
+
+
 }
-
-alert("Turno reservado: " + reserva)
-opcion= parseInt(prompt("Elija una especialidad: 1-Medico Clinico / 2-Pediatria / 3-Cardiologia /4-Salir Del sistema"))
-
-}
-
-alert("Usted Salio del Sistema")
-
+}while(opcionTurno!=3)
 
