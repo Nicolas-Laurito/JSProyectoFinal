@@ -112,6 +112,7 @@ btnReservar.addEventListener(`click`, ()=>{
             `
         })
 
+      
         
     medicosDisponibles.forEach((medicos) => {
         document.getElementById(`cards${medicos.id}`).lastElementChild.lastElementChild.lastElementChild.addEventListener(`click`, () => {
@@ -125,7 +126,9 @@ btnReservar.addEventListener(`click`, ()=>{
                     </div>
                 </div>
                 `
-        
+         
+
+
             medicos.turnosDisponibles.forEach((turno,i) => {
             contenido.innerHTML += `
                 <form id="forms${i}">  
@@ -139,11 +142,19 @@ btnReservar.addEventListener(`click`, ()=>{
                     <p>Turno Reservado con exito</p>
                     `   
                     let turnoReservado = medicos.turnosDisponibles[i]
-                    if (usuariosRegistrados.some(usuario=>usuario.dni===usuarioActivo)){
-                            usuariosRegistrados.turnosAgendados.push(turnoReservado)
-                            localStorage.setItem(`usuariosRegistrados`, JSON.stringify(usuariosRegistrados))
+                    usuariosRegistrados.forEach(usuarios=>{
+                        if (usuarios.dni===usuarioActivo){
+                            let indice = usuarios.indexof(usuarios.dni)
+                            console.log(indice)
+                          
+                        }
+                        usuariosRegistrados[indice].turnosAgendados.push(turnoReservado)
+                        localStorage.setItem(`usuariosRegistrados`, JSON.stringify(usuariosRegistrados))
 
-                    }
+                    })
+                    
+
+                    
 
                 })
             })
